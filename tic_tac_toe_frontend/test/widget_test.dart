@@ -1,18 +1,31 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tic_tac_toe_frontend/main.dart';
 
 void main() {
-  testWidgets('App generation message displayed', (WidgetTester tester) async {
-    await tester.pumpWidget(const MyApp());
-
-    expect(find.text('tic_tac_toe_frontend App is being generated...'), findsOneWidget);
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+  testWidgets('Tic Tac Toe renders and shows title', (WidgetTester tester) async {
+    await tester.pumpWidget(const TicTacToeApp());
+    expect(find.text('Tic Tac Toe'), findsOneWidget);
   });
 
-  testWidgets('App bar has correct title', (WidgetTester tester) async {
-    await tester.pumpWidget(const MyApp());
+  testWidgets('Grid has 9 cells', (WidgetTester tester) async {
+    await tester.pumpWidget(const TicTacToeApp());
+    await tester.pumpAndSettle();
 
-    expect(find.text('tic_tac_toe_frontend'), findsOneWidget);
+    // Count 9 cells by checking expected semantics labels for each cell index.
+    int count = 0;
+    for (int i = 1; i <= 9; i++) {
+      final empty = find.bySemanticsLabel('Cell $i, empty').evaluate().isNotEmpty;
+      final x = find.bySemanticsLabel('Cell $i, X').evaluate().isNotEmpty;
+      final o = find.bySemanticsLabel('Cell $i, O').evaluate().isNotEmpty;
+      if (empty || x || o) {
+        count++;
+      }
+    }
+    expect(count, 9);
+  });
+
+  testWidgets('Restart button exists', (WidgetTester tester) async {
+    await tester.pumpWidget(const TicTacToeApp());
+    expect(find.text('Restart'), findsOneWidget);
   });
 }
